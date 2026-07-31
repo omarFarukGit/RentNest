@@ -7,7 +7,6 @@ import { catchAsync } from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import config from "../../config/index.js";
 
-
 // =============================================
 // 1. Create Payment
 // =============================================
@@ -51,23 +50,11 @@ const paymentSuccess = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  // ===== Process Payment Success =====
   const result = await paymentServices.paymentSuccess(session_id as string);
 
-  // ===== Check if redirect =====
-  if (req.query.redirect === "true") {
-    return res.redirect(
-      `${process.env.CLIENT_URL}/payments/success?payment_id=${result.data.payment.id}`,
-    );
-  }
-
-  // ===== Return JSON Response =====
-  sendResponse(res, {
-    success: true,
-    statusCode: httpStatus.OK,
-    message: result.message,
-    data: result.data,
-  });
+  return res.redirect(
+    `${process.env.CLIENT_URL}/payments/success?payment_id=${result.data.payment.id}`,
+  );
 });
 
 // =============================================
@@ -116,7 +103,11 @@ const getPaymentById = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await paymentServices.getPaymentById(id as string, userId, userRole as string);
+  const result = await paymentServices.getPaymentById(
+    id as string,
+    userId,
+    userRole as string,
+  );
 
   sendResponse(res, {
     success: true,
@@ -143,7 +134,11 @@ const getMyPayments = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await paymentServices.getMyPayments(userId, userRole as string, query);
+  const result = await paymentServices.getMyPayments(
+    userId,
+    userRole as string,
+    query,
+  );
 
   sendResponse(res, {
     success: true,
@@ -170,7 +165,10 @@ const getPaymentStats = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  const result = await paymentServices.getPaymentStats(userId, userRole as string);
+  const result = await paymentServices.getPaymentStats(
+    userId,
+    userRole as string,
+  );
 
   sendResponse(res, {
     success: true,

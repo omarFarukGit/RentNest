@@ -1,33 +1,31 @@
-
 model User {
-    id               String          @id @default(uuid())
-    name             String
-    email            String          @unique
-    password         String
-     profileImage    String? 
-    role             Roles           @default(TENANT)
-    status           UserStatus      @default(ACTIVE)
-    phone            String?
-    avatar           String?
-    address          String?
-    reviews          Review[]
-    properties       Property[]
-    landlordRequests RentalRequest[] @relation("landlordRequests")  
-    tenantRequests   RentalRequest[] @relation("tenantRequests")   
-    createdAt        DateTime        @default(now())
-    updatedAt        DateTime        @updatedAt
+  id               String          @id @default(uuid())
+  name             String
+  email            String          @unique
+  password         String
+  profileImage     String?
+  role             Roles           @default(TENANT)
+  status           UserStatus      @default(ACTIVE)
+  phone            String?
+  avatar           String?
+  address          String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  properties       Property[]
+  landlordRequests RentalRequest[] @relation("landlordRequests")
+  tenantRequests   RentalRequest[] @relation("tenantRequests")
+  reviews          Review[]
 
-    @@map("users")
+  @@map("users")
 }
 
-enum Roles{
-TENANT
-LANDLORD 
-ADMIN
-
+enum Roles {
+  TENANT
+  LANDLORD
+  ADMIN
 }
 
-enum UserStatus{
-    ACTIVE
-    BLOCKED
+enum UserStatus {
+  ACTIVE
+  BLOCKED
 }

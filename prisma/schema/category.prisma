@@ -2,10 +2,14 @@
 model Category{
     id String @id @default(uuid())
     name String  @unique
-
     property Property[] 
     createdAt  DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@map("categories")
+}
+
+enum CategoryStatus{
+    ACTIVE
+    INACTIVE
 }

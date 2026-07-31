@@ -156,7 +156,7 @@ const createPayment = async (tenantId: string, payload: any) => {
           },
         ],
         mode: "payment",
-        success_url: `${config.client_url}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${config.app_url}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${config.client_url}/payments/cancel?session_id={CHECKOUT_SESSION_ID}`,
         metadata: {
           paymentId: payment.id,

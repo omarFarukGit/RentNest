@@ -82,7 +82,9 @@ const createRentalRequest = async (tenantId: string, payload: any) => {
   });
 
   if (existingRequest) {
-    throw new Error("You already have a pending or approved request for this property");
+    throw new Error(
+      "You already have a pending or approved request for this property",
+    );
   }
 
   // ===== ওভারল্যাপিং রিকোয়েস্ট চেক =====
@@ -92,10 +94,7 @@ const createRentalRequest = async (tenantId: string, payload: any) => {
       status: "APPROVED",
       OR: [
         {
-          AND: [
-            { startDate: { lte: end } },
-            { endDate: { gte: start } },
-          ],
+          AND: [{ startDate: { lte: end } }, { endDate: { gte: start } }],
         },
       ],
     },
@@ -203,6 +202,11 @@ const getMyRentalRequests = async (tenantId: string, query: any) => {
             profileImage: true,
           },
         },
+        payment: {
+          select: {
+            status: true,
+          },
+        },
       },
       skip,
       take: parseInt(limit),
@@ -302,7 +306,11 @@ const getLandlordRentalRequests = async (landlordId: string, query: any) => {
 // =============================================
 // 4. সিঙ্গেল রেন্টাল রিকোয়েস্ট
 // =============================================
-const getSingleRentalRequest = async (rentalId: string, userId: string, userRole: string) => {
+const getSingleRentalRequest = async (
+  rentalId: string,
+  userId: string,
+  userRole: string,
+) => {
   // ===== ভ্যালিডেশন =====
   if (!rentalId) {
     throw new Error("Rental request ID is required");
@@ -373,7 +381,7 @@ const getSingleRentalRequest = async (rentalId: string, userId: string, userRole
 const updateRentalStatus = async (
   rentalId: string,
   landlordId: string,
-  payload: any
+  payload: any,
 ) => {
   // ===== পেলোড চেক =====
   if (!payload) {
@@ -397,7 +405,9 @@ const updateRentalStatus = async (
 
   const validStatuses = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"];
   if (!validStatuses.includes(status)) {
-    throw new Error(`Invalid status. Must be one of: ${validStatuses.join(", ")}`);
+    throw new Error(
+      `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+    );
   }
 
   // ===== রেন্টাল রিকোয়েস্ট আছে কিনা চেক =====
@@ -434,7 +444,7 @@ const updateRentalStatus = async (
 
   // ===== স্ট্যাটাস ট্রানজিশন চেক =====
   const currentStatus = rentalRequest.status;
-  
+
   if (currentStatus === "APPROVED" && status !== "CANCELLED") {
     throw new Error("Cannot change status of an approved request");
   }
@@ -564,11 +574,18 @@ const cancelRentalRequest = async (rentalId: string, tenantId: string) => {
 
   // ===== স্ট্যাটাস চেক =====
   if (rentalRequest.status === "APPROVED") {
-    throw new Error("Cannot cancel an approved request. Please contact the landlord.");
+    throw new Error(
+      "Cannot cancel an approved request. Please contact the landlord.",
+    );
   }
 
-  if (rentalRequest.status === "REJECTED" || rentalRequest.status === "CANCELLED") {
-    throw new Error(`This request is already ${rentalRequest.status.toLowerCase()}`);
+  if (
+    rentalRequest.status === "REJECTED" ||
+    rentalRequest.status === "CANCELLED"
+  ) {
+    throw new Error(
+      `This request is already ${rentalRequest.status.toLowerCase()}`,
+    );
   }
 
   // ===== রেন্টাল রিকোয়েস্ট ক্যান্সেল =====

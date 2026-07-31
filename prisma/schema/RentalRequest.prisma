@@ -1,26 +1,25 @@
 model RentalRequest {
-    id          String        @id @default(uuid())
-    propertyId  String
-    landlordId  String
-    tenantId    String
-    message     String?
-    status      RequestStatus @default(PENDING)
-    startDate   DateTime
-    endDate     DateTime
-    property    Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-    landlord    User          @relation("landlordRequests", fields: [landlordId], references: [id])  
-    tenant      User          @relation("tenantRequests", fields: [tenantId], references: [id])      
-    payment     Payment?
-    createdAt   DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
+  id         String        @id @default(uuid())
+  propertyId String
+  landlordId String
+  tenantId   String
+  message    String?
+  status     RequestStatus @default(PENDING)
+  startDate  DateTime
+  endDate    DateTime
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  payment    Payment?
+  landlord   User          @relation("landlordRequests", fields: [landlordId], references: [id])
+  property   Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenant     User          @relation("tenantRequests", fields: [tenantId], references: [id])
 
-    @@map("rental_requests")
+  @@map("rental_requests")
 }
-
 
 enum RequestStatus {
   PENDING
   APPROVED
   REJECTED
-  CANCELLED 
+  CANCELLED
 }

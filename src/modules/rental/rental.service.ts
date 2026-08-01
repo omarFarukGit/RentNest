@@ -240,6 +240,7 @@ const getLandlordRentalRequests = async (landlordId: string, query: any) => {
   const {
     status,
     propertyId,
+    paymentStatus,
     sortBy = "createdAt",
     sortOrder = "desc",
     limit = 10,
@@ -258,7 +259,11 @@ const getLandlordRentalRequests = async (landlordId: string, query: any) => {
   if (propertyId) {
     where.propertyId = propertyId;
   }
-
+  if (paymentStatus) {
+    where.payment = {
+      status: paymentStatus,
+    };
+  }
   const [rentalRequests, total] = await Promise.all([
     prisma.rentalRequest.findMany({
       where,
@@ -280,6 +285,11 @@ const getLandlordRentalRequests = async (landlordId: string, query: any) => {
             email: true,
             phone: true,
             profileImage: true,
+          },
+        },
+        payment: {
+          select: {
+            status: true,
           },
         },
       },

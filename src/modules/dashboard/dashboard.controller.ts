@@ -1,9 +1,9 @@
 // dashboard.controller.ts
 
 import { Request, Response } from "express";
-import { sendResponse } from "../../utils/sendResponse";
-import { DashboardService } from "./dashboard.service";
-import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse.js";
+import { DashboardService } from "./dashboard.service.js";
+import { catchAsync } from "../../utils/catchAsync.js";
 
 const getLandlordStats = catchAsync(async (req: Request, res: Response) => {
   const landlordId = req?.user?.id as string;

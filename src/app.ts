@@ -12,6 +12,7 @@ import { rentalRoutes } from "./modules/rental/rental.routes.js";
 import { paymentRoutes } from "./modules/payment/payment.routes.js";
 import { notFoundHandler } from "./middleware/not-found.js";
 import { globalErrorHandler } from "./middleware/global-error.js";
+import { dashboardRoutes } from "./modules/dashboard/dashboard.route.js";
 
 
 const app = express();
@@ -34,7 +35,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/payments", paymentRoutes);
-
+app.use('/api/dashboard',dashboardRoutes)
 //Not Found route handler
 app.use(notFoundHandler);
 

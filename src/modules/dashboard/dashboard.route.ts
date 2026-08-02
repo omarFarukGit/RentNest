@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { Roles } from "../../generated/prisma/enums";
-import { auth } from "../../middleware/auth";
-import { DashboardController } from "./dashboard.controller";
+import { Roles } from "../../generated/prisma/enums.js";
+import { auth } from "../../middleware/auth.js";
+import { DashboardController } from "./dashboard.controller.js";
+
 
 const router = Router();
 
@@ -11,4 +12,4 @@ router.get(
   DashboardController.getLandlordStats,
 );
 
-export const DashboardRoutes = router;
+export const dashboardRoutes = router;

@@ -1,6 +1,6 @@
 // dashboard.service.ts
 
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 const getLandlordStats = async (landlordId: string) => {
   // Total Properties

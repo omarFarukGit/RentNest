@@ -9,7 +9,7 @@ RentNest simplifies the rental process by connecting **Tenants**, **Landlords**,
 ## 🔗 Live Linksy
 
 * **Backend API:** `https://your-backend-url.vercel.app`
-* **API Documentation:** [API Documentation](./API_Documentation.md)
+* **API Documentation:** [API Documentation](https://documenter.getpostman.com/view/42619652/2sBY4PR1eG)
 * **Postman Collection:** [RentNest.postman_collection.json](./RentNest.postman_collection.json)
 * **Database Design ERD :** [RentNest ERD](https://drawsql.app/teams/omarfruk/diagrams/rentnest)
 

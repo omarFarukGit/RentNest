@@ -96,6 +96,71 @@ const getLandlordStats = async (landlordId: string) => {
   };
 };
 
-export const DashboardService = {
+const getAdminStats = async () => {
+  const [
+    totalUsers,
+    totalProperties,
+    rentalRequests,
+    activeLandlords,
+    recentProperties,
+  ] = await Promise.all([
+    prisma.user.count(),
+
+    prisma.property.count(),
+
+    prisma.rentalRequest.count({
+      where: {
+        status: "PENDING",
+      },
+    }),
+
+    prisma.user.count({
+      where: {
+        role: "LANDLORD",
+        status: "ACTIVE",
+      },
+    }),
+
+    // Recent Properties
+    prisma.property.findMany({
+      take: 5,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        title: true,
+        price: true,
+        location: true,
+        availability: true,
+        createdAt: true,
+
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  return {
+    totalUsers,
+    totalProperties,
+    rentalRequests,
+    activeLandlords,
+    recentProperties,
+  };
+};
+
+export const dashboardService = {
   getLandlordStats,
+  getAdminStats,
 };

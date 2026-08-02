@@ -160,7 +160,62 @@ const getAdminStats = async () => {
   };
 };
 
+const getTenantStats = async (tenantId: string) => {
+
+  const [
+    rentalRequests,
+    activeRentals,
+    totalPayments,
+  ] = await Promise.all([
+
+
+    // Total rental requests
+    prisma.rentalRequest.count({
+      where: {
+        tenantId,
+      },
+    }),
+
+
+
+    // Active rentals
+    prisma.rentalRequest.count({
+      where: {
+        tenantId,
+        status: "APPROVED",
+      },
+    }),
+
+
+
+    // Total payments
+    prisma.payment.aggregate({
+      where: {
+        status: "PAID",
+
+        rental_request: {
+          tenantId,
+        },
+      },
+
+      _sum: {
+        amount: true,
+      },
+    }),
+
+
+  ]);
+
+
+  return {
+    rentalRequests,
+    activeRentals,
+    totalPayments: totalPayments._sum.amount || 0,
+  };
+};
+
 export const dashboardService = {
   getLandlordStats,
   getAdminStats,
+  getTenantStats,
 };

@@ -19,7 +19,6 @@ const getLandlordStats = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAdminStats = catchAsync(async (req, res) => {
-
   const result = await dashboardService.getAdminStats();
 
   sendResponse(res, {
@@ -28,10 +27,23 @@ const getAdminStats = catchAsync(async (req, res) => {
     message: "Admin stats fetched successfully",
     data: result,
   });
+});
 
+const getTenantStats = catchAsync(async (req: Request, res: Response) => {
+  const tenantId = req?.user?.id as string;
+
+  const result = await dashboardService.getTenantStats(tenantId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Tenant stats fetched successfully",
+    data: result,
+  });
 });
 
 export const dashboardController = {
   getLandlordStats,
-  getAdminStats
+  getAdminStats,
+  getTenantStats,
 };

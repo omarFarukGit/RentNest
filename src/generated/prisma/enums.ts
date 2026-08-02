@@ -46,6 +46,14 @@ export const RequestStatus = {
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus]
 
 
+export const CategoryStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type CategoryStatus = (typeof CategoryStatus)[keyof typeof CategoryStatus]
+
+
 export const Roles = {
   TENANT: 'TENANT',
   LANDLORD: 'LANDLORD',

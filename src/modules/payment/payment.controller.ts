@@ -125,6 +125,8 @@ const getMyPayments = catchAsync(async (req: Request, res: Response) => {
   const userRole = req.user?.role;
   const query = req.query;
 
+  console.log(userId, userRole);
+
   if (!userId) {
     return sendResponse(res, {
       success: false,
@@ -155,7 +157,9 @@ const getMyPayments = catchAsync(async (req: Request, res: Response) => {
 const getPaymentStats = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
+ 
 
+  
   if (!userId) {
     return sendResponse(res, {
       success: false,

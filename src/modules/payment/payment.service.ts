@@ -1,6 +1,7 @@
 // src/modules/payment/payment.service.ts
 
 import config from "../../config/index.js";
+import { Roles } from "../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
 import { stripe } from "../../lib/stripe.js";
 import { IPaymentServices } from "./payment.interface.js";
@@ -492,32 +493,69 @@ const getMyPayments = async (userId: string, userRole: string, query: any) => {
     endDate,
     sortBy = "createdAt",
     sortOrder = "desc",
-    limit = 10,
-    page = 1,
+    limit = "10",
+    page = "1",
   } = query;
 
-  const skip = (parseInt(page) - 1) * parseInt(limit);
+  const take = Number(limit);
+  const currentPage = Number(page);
+  const skip = (currentPage - 1) * take;
+
   const where: any = {};
 
+  // ==========================
+  // Role Based Filter
+  // ==========================
+  if (userRole === Roles.TENANT) {
+    where.rental_request = {
+      is: {
+        tenantId: userId,
+      },
+    };
+  } else if (userRole === Roles.LANDLORD) {
+    where.rental_request = {
+      is: {
+        landlordId: userId,
+      },
+    };
+  }
+  // ADMIN হলে কোনো filter লাগবে না
+
+  // ==========================
+  // Status Filter
+  // ==========================
   if (status) {
     where.status = status;
   }
 
+  // ==========================
+  // Property Filter
+  // ==========================
   if (propertyId) {
     where.rental_request = {
-      propertyId,
+      is: {
+        ...(where.rental_request?.is || {}),
+        propertyId,
+      },
     };
   }
 
+  // ==========================
+  // Date Filter
+  // ==========================
+  if (startDate || endDate) {
+    where.createdAt = {};
+  }
+
   if (startDate) {
-    where.createdAt = { gte: new Date(startDate) };
+    where.createdAt.gte = new Date(startDate);
   }
 
   if (endDate) {
-    where.createdAt = { ...where.createdAt, lte: new Date(endDate) };
+    where.createdAt.lte = new Date(endDate);
   }
 
-  const [payments, total] = await Promise.all([
+  const [payments, total, stats] = await Promise.all([
     prisma.payment.findMany({
       where,
       include: {
@@ -551,41 +589,44 @@ const getMyPayments = async (userId: string, userRole: string, query: any) => {
           },
         },
       },
-      skip,
-      take: parseInt(limit),
       orderBy: {
         [sortBy]: sortOrder,
       },
+      skip,
+      take,
     }),
-    prisma.payment.count({ where }),
+
+    prisma.payment.count({
+      where,
+    }),
+
+    prisma.payment.aggregate({
+      where,
+      _count: {
+        id: true,
+      },
+      _sum: {
+        amount: true,
+      },
+    }),
   ]);
 
-  const stats = await prisma.payment.aggregate({
-    where,
-    _sum: {
-      amount: true,
-    },
-    _count: {
-      id: true,
-    },
-  });
-
-  const formattedPayments = payments.map((p: any) => ({
-    ...p,
-    amount: toNumber(p.amount),
-  }));
-
   return {
-    data: formattedPayments,
+    data: payments.map((payment) => ({
+      ...payment,
+      amount: Number(payment.amount),
+    })),
+
     stats: {
-      totalPayments: stats._count.id || 0,
-      totalAmount: stats._sum.amount ? toNumber(stats._sum.amount) : 0,
+      totalPayments: stats._count.id,
+      totalAmount: Number(stats._sum.amount ?? 0),
     },
+
     pagination: {
       total,
-      page: parseInt(page),
-      limit: parseInt(limit),
-      totalPages: Math.ceil(total / parseInt(limit)),
+      page: currentPage,
+      limit: take,
+      totalPages: Math.ceil(total / take),
     },
   };
 };

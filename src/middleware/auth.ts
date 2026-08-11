@@ -11,7 +11,6 @@ declare global {
     interface Request {
       user?: {
         email: string;
-        name: string;
         id: string;
         role: Roles;
       };
@@ -38,14 +37,14 @@ export const auth = (...requiredRoles: Roles[]) => {
     if (!verifiedToken.success) {
       throw new Error(verifiedToken.error);
     }
-    const { email, name, id, role } = verifiedToken.data as JwtPayload;
+    const { email, id, role } = verifiedToken.data as JwtPayload;
 
     if (requiredRoles.length && !requiredRoles.includes(role)) {
       throw new Error("forbiden access");
     }
 
     const user = await prisma.user.findUnique({
-      where: { id, email, name, role },
+      where: { id, email, role },
     });
 
     if (!user) {
@@ -57,7 +56,6 @@ export const auth = (...requiredRoles: Roles[]) => {
 
     req.user = {
       email,
-      name,
       id,
       role,
     };

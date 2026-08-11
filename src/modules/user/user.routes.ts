@@ -3,7 +3,6 @@ import { userController } from "./user.controller.js";
 import { auth } from "../../middleware/auth.js";
 import { Roles } from "../../generated/prisma/enums.js";
 
-
 const router = Router();
 
 router.post("/register", userController.register);
@@ -11,6 +10,11 @@ router.get(
   "/me",
   auth(Roles.ADMIN, Roles.LANDLORD, Roles.TENANT),
   userController.getMyProfile,
+);
+router.patch(
+  "/update-profile",
+  auth(Roles.ADMIN, Roles.LANDLORD, Roles.TENANT),
+  userController.updateProfile,
 );
 
 export const userRoutes = router;

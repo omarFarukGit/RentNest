@@ -32,7 +32,7 @@ const loginUserFromDB = async (payload: ILogingPayload) => {
 
   const JwtPayload = {
     id: user.id,
-    name: user.name,
+    // name: user.name,
     email: user.email,
     role: user.role,
   };
@@ -91,7 +91,7 @@ const refreshToken = async (token: string) => {
 
   const JwtPayload = {
     id: user.id,
-    name: user.name,
+    // name: user.name,
     email: user.email,
     role: user.role,
   };
